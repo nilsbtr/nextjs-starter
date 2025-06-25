@@ -71,11 +71,7 @@ export default function Navbar({ currentPath = "/" }: NavbarProps) {
                     const isActive = currentPath === link.href;
                     return (
                       <NavigationMenuItem key={index} className="w-full">
-                        <NavigationMenuLink
-                          href={link.href}
-                          className="text-muted-foreground hover:text-primary-foreground py-1.5"
-                          active={isActive}
-                        >
+                        <NavigationMenuLink href={link.href} className="py-1.5" active={isActive}>
                           {link.label}
                         </NavigationMenuLink>
                       </NavigationMenuItem>
@@ -97,11 +93,7 @@ export default function Navbar({ currentPath = "/" }: NavbarProps) {
                   const isActive = currentPath === link.href;
                   return (
                     <NavigationMenuItem key={index}>
-                      <NavigationMenuLink
-                        active={isActive}
-                        href={link.href}
-                        className="text-muted-foreground hover:text-primary-foreground py-1.5 font-medium"
-                      >
+                      <NavigationMenuLink active={isActive} href={link.href} className="py-1.5 font-medium">
                         {link.label}
                       </NavigationMenuLink>
                     </NavigationMenuItem>
