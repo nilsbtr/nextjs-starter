@@ -1,8 +1,8 @@
 import { useId } from "react";
 
-import { FileTextIcon, GlobeIcon, HomeIcon, LayersIcon, UsersIcon } from "lucide-react";
-
+import { LanguageMenu } from "@/components/navbar/language-menu";
 import Logo from "@/components/navbar/logo";
+import { ThemeToggle } from "@/components/navbar/theme-toggle";
 import UserMenu from "@/components/navbar/user-menu";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,41 +12,33 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Navigation links with icons for desktop icon-only navigation
 const navigationLinks = [
-  { href: "#", label: "Dashboard", icon: HomeIcon, active: true },
-  { href: "#", label: "Projects", icon: LayersIcon },
-  { href: "#", label: "Documentation", icon: FileTextIcon },
-  { href: "#", label: "Team", icon: UsersIcon },
+  { href: "/", label: "Dashboard", icon: "HomeIcon" },
+  { href: "/projects", label: "Projects", icon: "LayersIcon" },
+  { href: "/documentation", label: "Documentation", icon: "FileTextIcon" },
+  { href: "/team", label: "Team", icon: "UsersIcon" },
 ];
 
-// Language options
-const languages = [
-  { value: "en", label: "En" },
-  { value: "es", label: "Es" },
-  { value: "fr", label: "Fr" },
-  { value: "de", label: "De" },
-  { value: "ja", label: "Ja" },
-];
+interface NavbarProps {
+  currentPath?: string;
+}
 
-export default function Navbar() {
+export default function Navbar({ currentPath = "/" }: NavbarProps) {
   const id = useId();
 
   return (
     <header className="border-b px-4 md:px-6">
       <div className="flex h-16 items-center justify-between gap-4">
         {/* Left side */}
-        <div className="flex flex-1 items-center gap-2">
+        <div className="flex items-center gap-2">
           {/* Mobile menu trigger */}
           <Popover>
             <PopoverTrigger asChild>
               <Button className="group size-8 md:hidden" variant="ghost" size="icon">
                 <svg
-                  className="pointer-events-none transition-colors"
+                  className="pointer-events-none"
                   width={16}
                   height={16}
                   viewBox="0 0 24 24"
@@ -76,16 +68,15 @@ export default function Navbar() {
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => {
-                    const Icon = link.icon;
+                    const isActive = currentPath === link.href;
                     return (
                       <NavigationMenuItem key={index} className="w-full">
                         <NavigationMenuLink
                           href={link.href}
-                          className="hover:[&>svg]:text-accent-foreground data-[active]:[&>svg]:text-accent-foreground flex-row items-center gap-2 py-1.5 [&>svg]:transition-colors"
-                          active={link.active}
+                          className="text-muted-foreground hover:text-primary-foreground py-1.5"
+                          active={isActive}
                         >
-                          <Icon size={16} className="text-muted-foreground" aria-hidden="true" />
-                          <span>{link.label}</span>
+                          {link.label}
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                     );
@@ -94,34 +85,28 @@ export default function Navbar() {
               </NavigationMenu>
             </PopoverContent>
           </Popover>
+          {/* Main nav */}
           <div className="flex items-center gap-6">
-            {/* Logo */}
             <a href="#" className="text-primary hover:text-primary/90">
               <Logo />
             </a>
-            {/* Desktop navigation - icon only */}
-            <NavigationMenu className="hidden md:flex">
+            {/* Navigation menu */}
+            <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
-                <TooltipProvider>
-                  {navigationLinks.map((link) => (
-                    <NavigationMenuItem key={link.label}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <NavigationMenuLink
-                            href={link.href}
-                            className="hover:[&>svg]:text-accent-foreground flex size-8 items-center justify-center p-1.5 [&>svg]:transition-colors"
-                          >
-                            <link.icon size={20} aria-hidden="true" />
-                            <span className="sr-only">{link.label}</span>
-                          </NavigationMenuLink>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="px-2 py-1 text-xs">
-                          <p>{link.label}</p>
-                        </TooltipContent>
-                      </Tooltip>
+                {navigationLinks.map((link, index) => {
+                  const isActive = currentPath === link.href;
+                  return (
+                    <NavigationMenuItem key={index}>
+                      <NavigationMenuLink
+                        active={isActive}
+                        href={link.href}
+                        className="text-muted-foreground hover:text-primary-foreground py-1.5 font-medium"
+                      >
+                        {link.label}
+                      </NavigationMenuLink>
                     </NavigationMenuItem>
-                  ))}
-                </TooltipProvider>
+                  );
+                })}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -131,25 +116,7 @@ export default function Navbar() {
           {/* Theme toggle */}
           <ThemeToggle />
           {/* Language selector */}
-          <Select defaultValue="en">
-            <SelectTrigger
-              id={`language-${id}`}
-              className="[&>svg]:text-muted-foreground/80 hover:[&>svg]:text-accent-foreground hover:bg-accent hover:text-accent-foreground h-8 border-none px-2 shadow-none [&>svg]:shrink-0 [&>svg]:transition-colors"
-              aria-label="Select language"
-            >
-              <GlobeIcon size={16} aria-hidden="true" />
-              <SelectValue className="hidden sm:inline-flex" />
-            </SelectTrigger>
-            <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2 [&_*[role=option]>span]:flex [&_*[role=option]>span]:items-center [&_*[role=option]>span]:gap-2">
-              {languages.map((lang) => (
-                <SelectItem key={lang.value} value={lang.value}>
-                  <span className="flex items-center gap-2">
-                    <span className="truncate">{lang.label}</span>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <LanguageMenu />
           {/* User menu */}
           <UserMenu />
         </div>

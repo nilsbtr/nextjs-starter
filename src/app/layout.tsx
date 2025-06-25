@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Roboto, Roboto_Mono } from "next/font/google";
 
-import Navbar from "@/components/navbar/navbar";
+import NavbarWrapper from "@/components/navbar/navbar-wrapper";
 import { Providers } from "@/components/providers";
 
 import "./globals.css";
@@ -42,7 +42,7 @@ export default function RootLayout({
       <body className={`${nunito.variable} ${roboto.variable} ${robotoMono.variable} h-screen w-screen antialiased`}>
         <Providers>
           <div className="flex h-full w-full flex-col">
-            <Navbar />
+            <NavbarWrapper />
             <main className="flex-grow overflow-y-auto">{children}</main>
           </div>
         </Providers>
